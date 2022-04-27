@@ -1,0 +1,11 @@
+name: time-series-forecasting
+dependencies:
+- pip
+- python=3.8
+- pip:
+  - ipykernel
+  - matplotlib
+  - numpy
+  - pandas
+  - pmdarima
+  - statsmodels
