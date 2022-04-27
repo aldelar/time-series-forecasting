@@ -1,0 +1,7 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
+command: python forecast_auto_arima_job.py
+experiment_name: epi-auto-arima
+environment:
+  conda_file: ./conda.yml
+  image: library/python@latest
+compute: azureml:cpu-4x-ds3v2
