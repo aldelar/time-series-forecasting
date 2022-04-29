@@ -122,9 +122,6 @@ def train_models(train_folder,train_file,eval_folder,ts_level_1,ts_level_2,ts_ta
             # save results
             eval_file.write(f"{level_1},{level_2},{train_count},{train_std},{train_mean},{train_min},{train_max},{adf_test_pval},{adf_test_sig},{training_time_in_s},{forecast_time_in_s},{accuracy['mape']},{accuracy['me']},{accuracy['mae']},{accuracy['mpe']},{accuracy['rmse']},{accuracy['corr']},{accuracy['minmax']}\n")
 
-            if i==2:
-                break
-
     # close output file
     eval_file.close()
 
