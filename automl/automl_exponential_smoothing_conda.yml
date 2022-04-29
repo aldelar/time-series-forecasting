@@ -1,4 +1,4 @@
-name: region-fwst-ds1438-exponential-smoothing
+name: ts-automl-exponential-smoothing
 channels:
 - anaconda
 - conda-forge
