@@ -6,7 +6,7 @@ This repo is leveraging:
 - [Azure Machine Learning (AML)](https://azure.microsoft.com/en-us/services/machine-learning/#documentation)
 - [AML CLI v2](https://docs.microsoft.com/en-us/azure/machine-learning/how-to-train-cli) for the job definitions (yml)
 
-### Setup 
+## Setup 
 
 NOTE: you can change these defaults names by updating the CLI v2 yml files
 - Input training data to be located into an AML DataStore named 'datalake', in a container name 'ts_train'
@@ -39,14 +39,15 @@ Example job parameters:
 
 The concept of AML CLI v2 is that you can build and run your code locally and then execute that same script in Azure w/o any code change.
 
-Run training locally:
+## Training locally
+
 
     conda env create -f src/forecast/auto_arima_conda.yml
     conda activate time-series-forecasting
 
     python src/forecast_auto_arima.py --train_folder=datalake/train --train_file=train_region.csv --eval_folder=datalake/eval --ts_level_1=Region --ts_level_2="Part Number" --ts_target="Units sold per Part" --ts_test_horizon=12 --ts_forecast_horizon=12
 
-Run training in AML:
+## Training in AML
 
 Make sure you have installed the Azure CLI and then that you have the AML extension installed
 
