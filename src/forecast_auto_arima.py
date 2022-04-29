@@ -6,18 +6,10 @@ import numpy as np
 import pmdarima as pm
 from pmdarima.arima import ADFTest
 
-# parse script arguments
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--train_folder", type=str)
-    parser.add_argument("--train_file", type=str)
-    parser.add_argument("--tier_level", type=str)
-    parser.add_argument("--eval_folder", type=str)
-    return parser.parse_args()
-
-# compute accuracy metrics
 import warnings
 warnings.filterwarnings("ignore")
+
+# compute accuracy metrics
 def compute_accuracy(forecast, actual):
     mape = np.mean(np.abs(forecast - actual)/np.abs(actual))  # MAPE
     me = np.mean(forecast - actual)             # ME
@@ -132,17 +124,21 @@ def train_models(train_folder,train_file,tier_level,eval_folder):
             # save results
             eval_file.write(f"{tier_level},{tier},{sku},{train_count},{train_std},{train_mean},{train_min},{train_max},{adf_test_pval},{adf_test_sig},{training_time_in_s},{forecast_time_in_s},{accuracy['mape']},{accuracy['me']},{accuracy['mae']},{accuracy['mpe']},{accuracy['rmse']},{accuracy['corr']},{accuracy['minmax']}\n")
 
-            if i == 2:
-                break
-
     # close output file
     eval_file.close()
 
-#
-if __name__ == "__main__":
-    
-    args = parse_args()
+# parse script arguments
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--train_folder", type=str)
+    parser.add_argument("--train_file", type=str)
+    parser.add_argument("--tier_level", type=str)
+    parser.add_argument("--eval_folder", type=str)
+    return parser.parse_args()
 
+# main
+if __name__ == "__main__":
+    args = parse_args()
     train_models(train_folder=args.train_folder,
                 train_file=args.train_file,
                 tier_level=args.tier_level,

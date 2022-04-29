@@ -1,6 +1,7 @@
 $schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
 experiment_name: epi-auto-arima
 type: command
+code: ./
 command: >-
   python forecast_auto_arima.py
   --train_folder ${{inputs.train_folder}}
@@ -10,15 +11,13 @@ command: >-
 inputs:
   train_folder:
     type: uri_folder
-    path: azureml://datastores/aldelarml_datastore/paths/epi/train
+    path: azureml://datastores/datalake/paths/epi_train
   train_file: "train_region.csv"
   tier_level: "Region"
 outputs:
   eval_folder:
     type: uri_folder
-    path: azureml://datastores/aldelarml_datastore/paths/epi/eval
-    
-code: ./
+    path: azureml://datastores/datalake/paths/epi_eval
 environment:
   conda_file: conda.yml
   image: mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04@latest
