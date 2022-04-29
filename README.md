@@ -3,8 +3,8 @@
 This use case trains a set of time series using AutoArima, generating one model per time series, forecasting, and evaluating performance of each time series.
 
 This repo is leveraging:
-- Azure Machine Learning (AML)
-- AML CLI v2 for the job definitions (yml)
+- [Azure Machine Learning (AML)](https://azure.microsoft.com/en-us/services/machine-learning/#documentation)
+- [AML CLI v2](https://docs.microsoft.com/en-us/azure/machine-learning/how-to-train-cli) for the job definitions (yml)
 
 ### Setup 
 
