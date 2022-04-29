@@ -3,15 +3,15 @@ experiment_name: ts-auto-arima
 type: command
 code: ./
 command: >-
-  python forecast_auto_arima.py
+  python auto_arima.py
   --train_folder ${{inputs.train_folder}}
   --train_file ${{inputs.train_file}}
   --eval_folder ${{outputs.eval_folder}}
   --ts_level_1 ${{inputs.ts_level_1}}
   --ts_level_2 ${{inputs.ts_level_2}}
-  --ts_target ${{inputs.target_column}}
-  --ts_test_horizon ${{inputs.test_horizon}}
-  --ts_forecast_horizon ${{inputs.forecast_horizon}}
+  --ts_target ${{inputs.ts_target}}
+  --ts_test_horizon ${{inputs.ts_test_horizon}}
+  --ts_forecast_horizon ${{inputs.ts_forecast_horizon}}
 inputs:
   train_folder:
     type: uri_folder
@@ -27,6 +27,6 @@ outputs:
     type: uri_folder
     path: azureml://datastores/datalake/paths/ts_eval
 environment:
-  conda_file: conda.yml
+  conda_file: auto_arima_conda.yml
   image: mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04@latest
-compute: azureml:cpu-8x-f8sv2
+compute: azureml:cpu-cluster
