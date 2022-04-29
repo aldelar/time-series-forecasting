@@ -17,6 +17,7 @@ outputs:
   eval_folder:
     type: uri_folder
     path: azureml://datastores/aldelarml_datastore/paths/epi/eval
+    
 code: ./
 environment:
   conda_file: conda.yml
