@@ -30,7 +30,6 @@ def train_models(train_folder,train_file,eval_folder,ts_level_1,ts_level_2,ts_ta
     # training data location
     data_file_path = os.path.join(train_folder,train_file)
     # eval data location
-    print(f"eval_folder: {eval_folder}")
     os.makedirs(eval_folder, exist_ok=True)
     eval_file_path = os.path.join(eval_folder, ts_level_1 + '_eval.csv')
     eval_file = open(eval_file_path, 'w')
