@@ -1,6 +1,6 @@
 $schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
 type: pipeline
-display_name: ts-auto-arima-pipeline
+experiment_name: time-series-forecasting
 compute: azureml:cpu-cluster
 
 jobs:
@@ -15,9 +15,9 @@ jobs:
       --train_folder ${{inputs.train_folder}}
       --train_file ${{inputs.train_file}}
       --eval_folder ${{outputs.eval_folder}}
-      --ts_level_1 ${{inputs.ts_level_1}}
-      --ts_level_2 ${{inputs.ts_level_2}}
-      --ts_target ${{inputs.ts_target}}
+      --ts_level_1 "${{inputs.ts_level_1}}"
+      --ts_level_2 "${{inputs.ts_level_2}}"
+      --ts_target "${{inputs.ts_target}}"
       --ts_test_horizon ${{inputs.ts_test_horizon}}
       --ts_forecast_horizon ${{inputs.ts_forecast_horizon}}
     inputs:
@@ -45,9 +45,9 @@ jobs:
       --train_folder ${{inputs.train_folder}}
       --train_file ${{inputs.train_file}}
       --eval_folder ${{outputs.eval_folder}}
-      --ts_level_1 ${{inputs.ts_level_1}}
-      --ts_level_2 ${{inputs.ts_level_2}}
-      --ts_target ${{inputs.ts_target}}
+      --ts_level_1 "${{inputs.ts_level_1}}"
+      --ts_level_2 "${{inputs.ts_level_2}}"
+      --ts_target "${{inputs.ts_target}}"
       --ts_test_horizon ${{inputs.ts_test_horizon}}
       --ts_forecast_horizon ${{inputs.ts_forecast_horizon}}
     inputs:

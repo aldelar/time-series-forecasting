@@ -131,7 +131,6 @@ def parse_args():
     parser.add_argument("--train_folder", type=str)
     parser.add_argument("--train_file", type=str)
     parser.add_argument("--eval_folder", type=str)
-    parser.add_argument("--tier_level", type=str)
     parser.add_argument("--ts_level_1", type=str)
     parser.add_argument("--ts_level_2", type=str)
     parser.add_argument("--ts_target", type=str)
