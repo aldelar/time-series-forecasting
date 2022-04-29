@@ -3,6 +3,7 @@
 datalake/
 models/
 powerbi/
+src/kql/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
