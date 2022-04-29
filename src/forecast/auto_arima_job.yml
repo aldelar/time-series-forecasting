@@ -1,5 +1,5 @@
 $schema: https://azuremlschemas.azureedge.net/latest/commandJob.schema.json
-experiment_name: ts-auto-arima
+experiment_name: time-series-forecasting
 type: command
 code: ./
 command: >-
@@ -10,7 +10,6 @@ command: >-
   --ts_level_1 "${{inputs.ts_level_1}}"
   --ts_level_2 "${{inputs.ts_level_2}}"
   --ts_target "${{inputs.ts_target}}"
-  --ts_test_horizon ${{inputs.ts_test_horizon}}
   --ts_forecast_horizon ${{inputs.ts_forecast_horizon}}
 inputs:
   train_folder:
@@ -20,7 +19,6 @@ inputs:
   ts_level_1: "Region"
   ts_level_2: "Part Number"
   ts_target: "Units sold per Part"
-  ts_test_horizon: 12
   ts_forecast_horizon: 12
 outputs:
   eval_folder:

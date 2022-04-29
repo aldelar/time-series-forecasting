@@ -25,7 +25,7 @@ def compute_accuracy(forecast, actual):
             'corr':corr, 'minmax':minmax})
 
 #
-def train_models(train_folder,train_file,eval_folder,ts_level_1,ts_level_2,ts_target,ts_test_horizon,ts_forecast_horizon):
+def train_models(train_folder,train_file,eval_folder,ts_level_1,ts_level_2,ts_target,ts_forecast_horizon):
     
     # training data location
     data_file_path = os.path.join(train_folder,train_file)
@@ -58,7 +58,7 @@ def train_models(train_folder,train_file,eval_folder,ts_level_1,ts_level_2,ts_ta
             level_2_df = level_1_df[level_1_df[ts_level_2] == level_2]
             # drop ts_level_2 column
             level_2_df = level_2_df.drop([ts_level_2], axis=1)
-            len_train = len(level_2_df[ts_target])-ts_test_horizon
+            len_train = len(level_2_df[ts_target])-ts_forecast_horizon
             train_df = level_2_df[:len_train]
             test_df = level_2_df[len_train:]
 
@@ -133,7 +133,6 @@ def parse_args():
     parser.add_argument("--ts_level_1", type=str)
     parser.add_argument("--ts_level_2", type=str)
     parser.add_argument("--ts_target", type=str)
-    parser.add_argument("--ts_test_horizon", type=int)
     parser.add_argument("--ts_forecast_horizon", type=int)
     return parser.parse_args()
 
@@ -146,6 +145,5 @@ if __name__ == "__main__":
                 ts_level_1=args.ts_level_1,
                 ts_level_2=args.ts_level_2,
                 ts_target=args.ts_target,
-                ts_test_horizon=args.ts_test_horizon,
                 ts_forecast_horizon=args.ts_forecast_horizon
                 )

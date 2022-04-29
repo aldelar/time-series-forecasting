@@ -1,6 +1,6 @@
 $schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
-type: pipeline
 experiment_name: time-series-forecasting
+type: pipeline
 compute: azureml:cpu-cluster
 
 jobs:
@@ -18,7 +18,6 @@ jobs:
       --ts_level_1 "${{inputs.ts_level_1}}"
       --ts_level_2 "${{inputs.ts_level_2}}"
       --ts_target "${{inputs.ts_target}}"
-      --ts_test_horizon ${{inputs.ts_test_horizon}}
       --ts_forecast_horizon ${{inputs.ts_forecast_horizon}}
     inputs:
       train_folder:
@@ -48,7 +47,6 @@ jobs:
       --ts_level_1 "${{inputs.ts_level_1}}"
       --ts_level_2 "${{inputs.ts_level_2}}"
       --ts_target "${{inputs.ts_target}}"
-      --ts_test_horizon ${{inputs.ts_test_horizon}}
       --ts_forecast_horizon ${{inputs.ts_forecast_horizon}}
     inputs:
       train_folder:
