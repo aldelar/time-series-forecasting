@@ -25,48 +25,46 @@ def compute_accuracy(forecast, actual):
             'corr':corr, 'minmax':minmax})
 
 #
-def train_models(train_folder,train_file,tier_level,eval_folder):
+def train_models(train_folder,train_file,eval_folder,ts_level_1,ts_level_2,ts_target,ts_test_horizon,ts_forecast_horizon):
     
     # training data location
     data_file_path = os.path.join(train_folder,train_file)
     # eval data location
     print(f"eval_folder: {eval_folder}")
     os.makedirs(eval_folder, exist_ok=True)
-    eval_file_path = os.path.join(eval_folder, tier_level + '_eval.csv')
+    eval_file_path = os.path.join(eval_folder, ts_level_1 + '_eval.csv')
     eval_file = open(eval_file_path, 'w')
-    eval_file.write("tier_level,tier,sku,train_count,train_std,train_mean,train_min,train_max,adf_test_pval,adf_test_sig,training_time_in_s,forecast_time_in_s,acc_mape,acc_me,acc_mae,acc_mpe,acc_rmse,acc_corr,acc_minmax\n")
+    eval_file.write(f"{ts_level_1},{ts_level_2},train_count,train_std,train_mean,train_min,train_max,adf_test_pval,adf_test_sig,training_time_in_s,forecast_time_in_s,acc_mape,acc_me,acc_mae,acc_mpe,acc_rmse,acc_corr,acc_minmax\n")
     #
     print(f"==> train_models()\n    in : {data_file_path})\n    out: {eval_file_path}")
 
     # load training data
     training_df = pd.read_csv(data_file_path)
 
-    # get unique tiers
-    tiers = training_df[tier_level].unique()
-    tiers_len = len(tiers)
+    # get unique level1 values
+    level_1_values = training_df[ts_level_1].unique()
+    level_1_values_len = len(level_1_values)
+    for level_1 in level_1_values:
 
-    for tier in tiers:
+        # filter training_df by level1
+        level_1_df = training_df[training_df[ts_level_1] == level_1]
+        # drop level1 column
+        level_1_df = level_1_df.drop([ts_level_1], axis=1)
 
-        #
-        tier_df = training_df[training_df[tier_level] == tier]
-        # data engineering
-        tier_df = tier_df.drop([tier_level], axis=1)
-
-        # get unique items from training_df 'Part Number' column
-        skus = tier_df['Part Number'].unique()
-
-        # compute model for each sku
+        # get unique level2 values for level1 time series
+        level_2_values = level_1_df[ts_level_2].unique()
+        level_2_values_len = len(level_2_values)
         i = 0
-        skus_len = len(skus)
-        for sku in skus:
-            df = tier_df[tier_df['Part Number'] == sku]
-            df = df.drop(['Part Number'], axis=1)
-            len_train = len(df['Units sold per Part'])-12
-            train = df[:len_train]
-            test = df[len_train:]
+        for level_2 in level_2_values:
+            level_2_df = level_1_df[level_1_df[ts_level_2] == level_2]
+            # drop ts_level_2 column
+            level_2_df = level_2_df.drop([ts_level_2], axis=1)
+            len_train = len(level_2_df[ts_target])-ts_test_horizon
+            train_df = level_2_df[:len_train]
+            test_df = level_2_df[len_train:]
 
             # train stats
-            train_stats = train['Units sold per Part'].describe()
+            train_stats = train_df[ts_target].describe()
             train_count = train_stats['count']
             train_mean = train_stats['mean']
             train_min = train_stats['min']
@@ -75,7 +73,7 @@ def train_models(train_folder,train_file,tier_level,eval_folder):
 
             # augmented Dickey–Fuller test
             adf_test = ADFTest(alpha = 0.05)
-            adf_test_results = adf_test.should_diff(train['Units sold per Part'])
+            adf_test_results = adf_test.should_diff(train_df[ts_target])
             adf_test_pval = adf_test_results[0]
             adf_test_sig = adf_test_results[1]
             #print(f"adf_test_pval: {adf_test_pval}")
@@ -83,7 +81,7 @@ def train_models(train_folder,train_file,tier_level,eval_folder):
 
             # autoarima
             training_start_time = time.time()
-            model = pm.auto_arima(train['Units sold per Part'], start_p=1, start_q=1,
+            model = pm.auto_arima(train_df[ts_target], start_p=1, start_q=1,
                 test='adf',       # use adftest to find optimal 'd'
                 max_p=3, max_q=3, # maximum p and q
                 m=1,              # frequency of series
@@ -111,7 +109,7 @@ def train_models(train_folder,train_file,tier_level,eval_folder):
 
             # compute model accuracy
             forecast = fc
-            actual = np.array(test['Units sold per Part'])
+            actual = np.array(test_df[ts_target])
             accuracy = compute_accuracy(forecast, actual)
             #print(f"forecast: {forecast}")
             #print(f"actual: {actual}")
@@ -119,10 +117,13 @@ def train_models(train_folder,train_file,tier_level,eval_folder):
 
             # output results
             i += 1
-            print(f"{i}/{skus_len} Trained {tier_level}/{tier}/{sku} => train_mean: {train_mean} | train_std: {train_std} | mape: {round(accuracy['mape']*100, 0)}% | trained in {round(training_time_in_s,2)} seconds")
+            print(f"{i}/{level_2_values_len} Trained {level_1}/{level_2} => train_mean: {train_mean} | train_std: {train_std} | mape: {round(accuracy['mape']*100, 0)}% | trained in {round(training_time_in_s,2)} seconds")
 
             # save results
-            eval_file.write(f"{tier_level},{tier},{sku},{train_count},{train_std},{train_mean},{train_min},{train_max},{adf_test_pval},{adf_test_sig},{training_time_in_s},{forecast_time_in_s},{accuracy['mape']},{accuracy['me']},{accuracy['mae']},{accuracy['mpe']},{accuracy['rmse']},{accuracy['corr']},{accuracy['minmax']}\n")
+            eval_file.write(f"{level_1},{level_2},{train_count},{train_std},{train_mean},{train_min},{train_max},{adf_test_pval},{adf_test_sig},{training_time_in_s},{forecast_time_in_s},{accuracy['mape']},{accuracy['me']},{accuracy['mae']},{accuracy['mpe']},{accuracy['rmse']},{accuracy['corr']},{accuracy['minmax']}\n")
+
+            if i==2:
+                break
 
     # close output file
     eval_file.close()
@@ -132,8 +133,13 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--train_folder", type=str)
     parser.add_argument("--train_file", type=str)
-    parser.add_argument("--tier_level", type=str)
     parser.add_argument("--eval_folder", type=str)
+    parser.add_argument("--tier_level", type=str)
+    parser.add_argument("--ts_level_1", type=str)
+    parser.add_argument("--ts_level_2", type=str)
+    parser.add_argument("--ts_target", type=str)
+    parser.add_argument("--ts_test_horizon", type=int)
+    parser.add_argument("--ts_forecast_horizon", type=int)
     return parser.parse_args()
 
 # main
@@ -141,5 +147,10 @@ if __name__ == "__main__":
     args = parse_args()
     train_models(train_folder=args.train_folder,
                 train_file=args.train_file,
-                tier_level=args.tier_level,
-                eval_folder=args.eval_folder)
+                eval_folder=args.eval_folder,
+                ts_level_1=args.ts_level_1,
+                ts_level_2=args.ts_level_2,
+                ts_target=args.ts_target,
+                ts_test_horizon=args.ts_test_horizon,
+                ts_forecast_horizon=args.ts_forecast_horizon
+                )
